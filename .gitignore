@@ -1,0 +1,15 @@
+*.json
+*.db
+*.csv
+*.log
+*.pyc
+*.pyo
+*.pyclass
+*.pyo
+*.pyc
+*.ipynb_checkpoints
+*.ipynb
+*.env
+*.vscode
+__pycache__
+.DS_Store

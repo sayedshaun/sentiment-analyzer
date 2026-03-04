@@ -1,0 +1,69 @@
+services:
+  sentiment-analyzer-bert:
+    container_name: sentiment-analyzer-bert
+    build:
+      context: ./bert
+      dockerfile: Dockerfile
+    ports:
+      - "8010:7777"
+
+
+  sentiment-analyzer-llm:
+    container_name: sentiment-analyzer-llm
+    build:
+      context: ./llm
+      dockerfile: Dockerfile
+    ports:
+      - "8011:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+    environment:
+      CUDA_VISIBLE_DEVICES: 0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+    gpus: all
+    
+
+  sentiment-analyzer-backend:
+    container_name: sentiment-analyzer-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8012:8000"
+    
+    volumes:
+      - llm_cache:/root/.cache
+
+    depends_on:
+      - bert
+      - llm
+
+    restart: unless-stopped
+
+
+  sentiment-analyzer-ui:
+    container_name: sentiment-analyzer-ui
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - HOST=0.0.0.0
+      - TEXT_ANALYZE_API_URL=http://192.168.72.6:8012/text_analyze
+      - URL_ANALYZE_API_URL=http://192.168.72.6:8012/url_analyze
+    restart: unless-stopped   # ← add this line
+
+
+
+volumes:
+  ollama_models:
+    driver: local
+
+  llm_cache:
+    driver: local
