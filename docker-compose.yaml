@@ -60,6 +60,15 @@ services:
     restart: unless-stopped   # ← add this line
 
 
+  sentiment-analyzer-tts:
+    container_name: sentiment-analyzer-tts
+    build:
+      context: ./tts
+      dockerfile: Dockerfile
+    ports:
+      - "8013:8000"
+    restart: unless-stopped
+
 
 volumes:
   ollama_models:
