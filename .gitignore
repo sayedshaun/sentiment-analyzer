@@ -13,3 +13,16 @@
 *.vscode
 __pycache__
 .DS_Store
+*.wav
+*.mp3
+*.mp4
+*.avi
+*.mkv
+*.zip
+*.tar.gz
+*.exe
+*.dll
+*.so
+*.dylib
+*.bak
+*.tmp
