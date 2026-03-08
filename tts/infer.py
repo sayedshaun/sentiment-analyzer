@@ -2,8 +2,8 @@ import litserve as ls
 import nemo.collections.asr as nemo_asr
 import tempfile
 import os
-from .utils import convert_to_wav, chunk_audio
-from ..src.config import settings
+from tts.utils import convert_to_wav, chunk_audio
+from src.config import settings
 
 
 class ASRLitAPI(ls.LitAPI):
@@ -11,7 +11,7 @@ class ASRLitAPI(ls.LitAPI):
     def setup(self, device):
         self.model = nemo_asr.models.ASRModel.from_pretrained(settings.TTS_MODEL)
 
-    def transcribe_file(self, path: str) -> str:
+    def transcribe(self, path: str) -> str:
 
         wav_path = convert_to_wav(path)
         chunks = chunk_audio(wav_path, chunk_length_ms=30_000)
@@ -33,7 +33,7 @@ class ASRLitAPI(ls.LitAPI):
         with open(tmp_path, "wb") as f:
             f.write(audio_file.file.read())
 
-        text = self.transcribe_file(tmp_path)
+        text = self.transcribe(tmp_path)
 
         os.remove(tmp_path)
         return {"text": text}
