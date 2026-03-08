@@ -6,6 +6,15 @@ class Settings(BaseSettings):
 
     @property
     def TTS_URL(self):
-        return "http://sentiment-analyzer-tts:8000/predict"
+        return "http://localhost:8000/transcribe"
+    
+    @property
+    def OLLAMA_URL(self):
+        return "http://localhost:11434"
+    
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
 settings = Settings()

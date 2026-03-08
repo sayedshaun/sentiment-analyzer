@@ -7,6 +7,7 @@ from fastapi import HTTPException
 import httpx
 from dotenv import load_dotenv
 import os
+from ....config import settings
 
 
 load_dotenv()
@@ -24,9 +25,9 @@ class LLM:
     async def ollama():
         try:
             return ChatOllama(
-                model=os.getenv("OLLAMA_MODEL"),
+                model=settings.OLLAMA_MODEL,
                 cache=sqlite_cache,
-                base_url="http://llm:11434",
+                base_url=settings.OLLAMA_URL,
             )
         except Exception as e:
             raise HTTPException(status_code=404, detail=str(e))

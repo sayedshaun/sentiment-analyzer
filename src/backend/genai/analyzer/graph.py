@@ -3,10 +3,10 @@ from langgraph.graph.state import CompiledStateGraph
 import os
 import asyncio
 from dotenv import load_dotenv
-from src.ml.model import LLM, bert_inference
-from src.ml.prompt import feature_extraction_prompt
-from src.ml.schema import Story, Event, BaseStory, BertSentiment
-from src.ml.state import State
+from .model import LLM, bert_inference
+from .prompt import feature_extraction_prompt
+from .schema import Story, Event, BaseStory, BertSentiment
+from .state import State
 from src.logging import configure_logger
 
 load_dotenv()

@@ -2,10 +2,10 @@ import os
 import tempfile
 from fastapi import APIRouter, File, UploadFile
 from fastapi.concurrency import run_in_threadpool
-from .....genai.executor import get_executor
+from ....genai.executor import get_executor
 from .script import parser
 
-router = APIRouter(prefix="/document")
+router = APIRouter(prefix="/document", tags=["Document"])
 
 
 @router.post("/analyze")

@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Form, HTTPException, status
-from .....genai.executor import get_executor
+from ....genai.executor import get_executor
 
-router = APIRouter()
-prefix = "/text"
+router = APIRouter(prefix="/text", tags=["Text"])
 
 
 @router.post("/analyze")

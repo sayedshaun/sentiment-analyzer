@@ -1,5 +1,5 @@
 from typing import TypedDict
-from src.ml.schema import Story
+from .schema import Story
 
 
 class State(TypedDict):
