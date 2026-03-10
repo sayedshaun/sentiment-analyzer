@@ -1,5 +1,5 @@
 import asyncio
-from .analyzer.graph import create_graph
+from .graph import create_graph
 
 _executors = {}
 _locks = {}
@@ -15,3 +15,4 @@ async def get_executor():
             _executors[loop] = await create_graph()
 
         return _executors[loop]
+    

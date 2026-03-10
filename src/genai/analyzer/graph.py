@@ -3,7 +3,7 @@ from langgraph.graph.state import CompiledStateGraph
 import os
 import asyncio
 from dotenv import load_dotenv
-from .model import LLM, bert_inference
+from .llm import LLM, bert_inference
 from .prompt import feature_extraction_prompt
 from .schema import Story, Event, BaseStory, BertSentiment
 from .state import State

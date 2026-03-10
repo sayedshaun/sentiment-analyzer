@@ -2,7 +2,8 @@ import litserve as ls
 import nemo.collections.asr as nemo_asr
 import tempfile
 import os
-from tts.utils import convert_to_wav, chunk_audio
+import asyncio
+from stt.utils import convert_to_wav, chunk_audio
 from src.config import settings
 
 
@@ -25,16 +26,15 @@ class ASRLitAPI(ls.LitAPI):
         os.remove(wav_path)
         return " ".join(transcription)
 
-    def predict(self, request):
+    async def predict(self, request):
         audio_file = request["file"]
-        tmp_path = tempfile.NamedTemporaryFile(
-            delete=False, suffix=audio_file.filename
-        ).name
+        suffix = os.path.splitext(audio_file.filename)[1]
+        tmp_path = tempfile.NamedTemporaryFile(delete=False, suffix=suffix).name
+
         with open(tmp_path, "wb") as f:
-            f.write(audio_file.file.read())
+            f.write(await audio_file.read())
 
-        text = self.transcribe(tmp_path)
-
+        text = await asyncio.to_thread(self.transcribe, tmp_path)
         os.remove(tmp_path)
         return {"text": text}
 

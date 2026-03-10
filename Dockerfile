@@ -1,12 +1,14 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
-$ sudo apt install ffmpeg -y
+RUN apt update && apt install ffmpeg -y
 
-COPY requirements.txt .
+COPY pyproject.toml .
 
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip
+
+RUN pip install .
 
 COPY . .
 

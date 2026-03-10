@@ -1,6 +1,6 @@
 from fastapi import APIRouter, File, UploadFile
 import httpx
-from ....genai.executor import get_executor
+from ....genai.analyzer.executor import get_executor
 from .....config import settings
 
 router = APIRouter(prefix="/audio", tags=["Audio"])

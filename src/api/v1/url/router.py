@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException
 from .script import crawler
-from ....genai.executor import get_executor
+from ....genai.analyzer.executor import get_executor
 
 
 router = APIRouter(prefix="/url", tags=["URL"])
