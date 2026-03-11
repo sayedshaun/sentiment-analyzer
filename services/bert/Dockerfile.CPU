@@ -1,0 +1,18 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# upgrade pip first
+RUN pip install --no-cache-dir --upgrade pip
+
+# install torch CPU version
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+# install other dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# copy app
+COPY . .
+
+CMD ["python", "main.py"]

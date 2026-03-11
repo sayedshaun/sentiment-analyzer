@@ -3,7 +3,7 @@ from langgraph.graph.state import CompiledStateGraph
 import os
 import asyncio
 from dotenv import load_dotenv
-from .llm import LLM, bert_inference
+from .llm import LLMManager, bert_inference
 from .prompt import feature_extraction_prompt
 from .schema import Story, Event, BaseStory, BertSentiment
 from .state import State
@@ -16,7 +16,7 @@ logger = configure_logger(__name__)
 async def features_extraction_node(state: State) -> State:
     text = state["text"]
     prompt = feature_extraction_prompt(text)
-    model = await LLM.ollama()
+    model = await LLMManager.ollama()
     structured_model = model.with_structured_output(BaseStory)
     response = await structured_model.ainvoke(prompt)
 

@@ -2,28 +2,38 @@ services:
   sentiment-analyzer-bert:
     container_name: sentiment-analyzer-bert
     build:
-      context: ./bert
-      dockerfile: Dockerfile
+      context: ./services/bert
+      dockerfile: Dockerfile.GPU
     ports:
       - "8010:8000"
     restart: unless-stopped
     environment:
       CUDA_VISIBLE_DEVICES: 0
-    gpus: all
-
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   sentiment-analyzer-tts:
     container_name: sentiment-analyzer-tts
     build:
-      context: ./tts
-      dockerfile: Dockerfile
+      context: ./services/stt
+      dockerfile: Dockerfile.GPU
     ports:
       - "8013:8000"
     restart: unless-stopped
     environment:
       CUDA_VISIBLE_DEVICES: 0
-    gpus: all
-
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   sentiment-analyzer-backend:
     container_name: sentiment-analyzer-backend
@@ -36,10 +46,9 @@ services:
       - llm_cache:/root/.cache
     depends_on:
       - sentiment-analyzer-bert
+      - sentiment-analyzer-tts
     restart: unless-stopped
 
 volumes:
   ollama_models:
-    driver: local
   llm_cache:
-    driver: local

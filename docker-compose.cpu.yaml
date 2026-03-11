@@ -1,0 +1,37 @@
+services:
+  sentiment-analyzer-bert:
+    container_name: sentiment-analyzer-bert
+    build:
+      context: ./services/bert
+      dockerfile: Dockerfile.CPU
+    ports:
+      - "8010:8000"
+    restart: unless-stopped
+
+
+  sentiment-analyzer-tts:
+    container_name: sentiment-analyzer-tts
+    build:
+      context: ./services/stt
+      dockerfile: Dockerfile.CPU
+    ports:
+      - "8013:8000"
+    restart: unless-stopped
+
+
+  sentiment-analyzer-backend:
+    container_name: sentiment-analyzer-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8012:8000"
+    volumes:
+      - llm_cache:/root/.cache
+    depends_on:
+      - sentiment-analyzer-bert
+    restart: unless-stopped
+
+volumes:
+  ollama_models:
+  llm_cache:

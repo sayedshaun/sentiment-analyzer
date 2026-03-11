@@ -12,7 +12,7 @@ cache_path = f"{cache_dir}/langchain_cache.db"
 sqlite_cache = SQLiteCache(database_path=cache_path)
 
 
-class LLM:
+class LLMManager:
 
     @staticmethod
     async def ollama(model_name: str = settings.OLLAMA_MODEL):
