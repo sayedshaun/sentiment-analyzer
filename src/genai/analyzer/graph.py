@@ -2,15 +2,24 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.graph.state import CompiledStateGraph
 import os
 import asyncio
+import httpx
 from dotenv import load_dotenv
-from .llm import LLMManager, bert_inference
+from .llm import LLMManager
 from .prompt import feature_extraction_prompt
 from .schema import Story, Event, BaseStory, BertSentiment
 from .state import State
 from src.logging import configure_logger
+from ...config import settings
 
 load_dotenv()
 logger = configure_logger(__name__)
+
+
+async def bert_inference(text: str) -> dict:
+    async with httpx.AsyncClient() as client:
+        response = await client.post(settings.BERT_CLASSIFIER_URL, json={"text": text})
+        response.raise_for_status()
+        return response.json()
 
 
 async def features_extraction_node(state: State) -> State:
