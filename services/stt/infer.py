@@ -3,8 +3,8 @@ import nemo.collections.asr as nemo_asr
 import tempfile
 import os
 import asyncio
-from stt.utils import convert_to_wav, chunk_audio
-from src.config import settings
+from utils import convert_to_wav, chunk_audio
+from config import settings
 
 
 class ASRLitAPI(ls.LitAPI):

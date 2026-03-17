@@ -1,6 +1,6 @@
 import asyncio
 import litserve as ls
-from stt.infer import ASRLitAPI
+from infer import ASRLitAPI
 
 
 async def main():

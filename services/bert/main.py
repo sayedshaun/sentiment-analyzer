@@ -1,6 +1,6 @@
 import asyncio
 import litserve as ls
-from bert.infer import BERTClassifierLitAPI
+from infer import BERTClassifierLitAPI
 
 
 async def main():

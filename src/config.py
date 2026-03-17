@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     TTS_MODEL: str
     OLLAMA_MODEL: str
     BERT_MODEL: str
-    OLLAMA_HOST: str | None = "localhost"
+    OLLAMA_HOST: str | None = "host.docker.internal"
     OLLAMA_PORT: int | None = 11434
 
     GOOGLE_MODEL: str | None = None
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 
     @property
     def BERT_CLASSIFIER_URL(self):
-        return "http://sentiment-analyzer-bert:8000/classify"
+        return "http://sentiment-analyzer-bert:8000/predict"
 
     @property
     def CONTENT_ANALYZER_URL(self):

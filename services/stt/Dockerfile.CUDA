@@ -1,5 +1,5 @@
 # Use an official Python image with CUDA support (if using GPU)
-FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-devel AS builder
 
 # Set working directory
 WORKDIR /app
@@ -14,12 +14,24 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+
+# Install runtime system dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /opt/conda/lib/python3.10/site-packages /opt/conda/lib/python3.10/site-packages
+
+COPY --from=builder /opt/conda/bin /opt/conda/bin
+
 # Copy application code
-COPY . .
+COPY . /app
 
 # Expose the port the API will run on
 EXPOSE 8000
 
-WORKDIR /app/tts
+WORKDIR /app
 
 CMD ["python", "main.py"]

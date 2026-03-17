@@ -1,9 +1,9 @@
 import litserve as ls
 import asyncio
 from transformers import pipeline
-from src.config import settings
-from bert.schema import TextInput, BertResponse
-from bert.mapper import label_mapping, merged_label_mapping
+from config import settings
+from schema import TextInput, BertResponse
+from mapper import label_mapping, merged_label_mapping
 
 
 class BERTClassifierLitAPI(ls.LitAPI):
