@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,15 @@ RUN pip install --no-cache-dir torch torchvision --index-url https://download.py
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+FROM python:3.12-slim
+
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+
+COPY --from=builder /usr/local/bin /usr/local/bin
+
 # copy app
-COPY . .
+COPY . /app
+
+WORKDIR /app
 
 CMD ["python", "main.py"]
