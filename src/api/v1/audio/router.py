@@ -5,7 +5,7 @@ from ....config import settings
 
 router = APIRouter(prefix="/audio", tags=["Audio"])
 
-@router.post("/audio_analyze")
+@router.post("/analyze")
 async def audio_analyze(file: UploadFile = File(...)):
     text = await file.read()
     executor = await get_executor()
