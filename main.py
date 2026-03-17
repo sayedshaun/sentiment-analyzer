@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from src.backend.api.v1.audio.router import router as audio_router
-from src.backend.api.v1.text.router import router as text_router
-from src.backend.api.v1.document.router import router as document_router
-from src.backend.api.v1.url.router import router as url_router
+from src.api.v1.audio.router import router as audio_router
+from src.api.v1.text.router import router as text_router
+from src.api.v1.document.router import router as document_router
+from src.api.v1.url.router import router as url_router
 
 
 app = FastAPI(title="Bangla Content Analysis API")
