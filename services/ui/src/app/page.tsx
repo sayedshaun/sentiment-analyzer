@@ -1,13 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { TextAnalysis } from '@/components/analysis/text-analysis'
-import { AudioAnalysis } from '@/components/analysis/audio-analysis'
-import { PdfAnalysis } from '@/components/analysis/pdf-analysis'
-import { UrlAnalysis } from '@/components/analysis/url-analysis'
-import { Brain, FileAudio, FileText, Link2, Moon, Sun } from 'lucide-react'
+import { Brain, FileText, Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 
@@ -49,96 +45,22 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Main Content */}
-        <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="text" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8 glass-effect border border-slate-200 dark:border-slate-700">
-              <TabsTrigger value="text" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900">
-                <FileText className="w-4 h-4" />
-                <span className="hidden sm:inline">Text</span>
-              </TabsTrigger>
-              <TabsTrigger value="audio" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900">
-                <FileAudio className="w-4 h-4" />
-                <span className="hidden sm:inline">Audio</span>
-              </TabsTrigger>
-              <TabsTrigger value="pdf" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900">
-                <FileText className="w-4 h-4" />
-                <span className="hidden sm:inline">PDF</span>
-              </TabsTrigger>
-              <TabsTrigger value="url" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900">
-                <Link2 className="w-4 h-4" />
-                <span className="hidden sm:inline">URL</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="text" className="space-y-6">
-              <Card className="border-0 shadow-xl glass-effect">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-blue-600" />
-                    Text Analysis
-                  </CardTitle>
-                  <CardDescription>
-                    Enter your text below to get comprehensive AI-powered analysis and insights.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <TextAnalysis />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="audio" className="space-y-6">
-              <Card className="border-0 shadow-xl glass-effect">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileAudio className="w-5 h-5 text-green-600" />
-                    Audio Analysis
-                  </CardTitle>
-                  <CardDescription>
-                    Upload an audio file to extract and analyze its content using advanced speech recognition.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <AudioAnalysis />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="pdf" className="space-y-6">
-              <Card className="border-0 shadow-xl glass-effect">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-red-600" />
-                    PDF Analysis
-                  </CardTitle>
-                  <CardDescription>
-                    Upload a PDF document to extract text and receive detailed analysis of its content.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <PdfAnalysis />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="url" className="space-y-6">
-              <Card className="border-0 shadow-xl glass-effect">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Link2 className="w-5 h-5 text-purple-600" />
-                    URL Analysis
-                  </CardTitle>
-                  <CardDescription>
-                    Enter a web URL to analyze its content and extract meaningful insights.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <UrlAnalysis />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+        {/* Main Content: single unified input */}
+        <div className="max-w-3xl mx-auto">
+          <Card className="border-0 shadow-xl glass-effect">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
+                Text / File Analysis
+              </CardTitle>
+              <CardDescription>
+                Enter your text or upload a file (documents, PDFs, images, or audio) below. Text input is processed inline; uploaded files are analyzed based on file type.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TextAnalysis />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

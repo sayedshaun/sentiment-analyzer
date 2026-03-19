@@ -1,24 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Loader2, Send, Sparkles, AlertTriangle } from 'lucide-react'
+import { Loader2, Send, Plus, X, AlertTriangle } from 'lucide-react'
 import { AnalysisResult } from '@/types/analysis'
 import { StoryResults } from './story-results'
 
+const SUPPORTED_FILE_TYPES = ['PDF', 'DOCX', 'PPTX', 'TXT', 'PNG', 'JPG', 'JPEG', 'MP3', 'WAV', 'M4A', 'OGG', 'FLAC', 'AAC']
+
 export function TextAnalysis() {
   const [text, setText] = useState('')
+  const [file, setFile] = useState<File | null>(null)
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const analyzeText = async () => {
-    if (!text.trim()) {
-      setError('Please enter some text to analyze')
+    if (!file && !text.trim()) {
+      setError('Please enter some text or upload a supported file to analyze')
       return
     }
 
@@ -28,9 +32,22 @@ export function TextAnalysis() {
 
     try {
       const formData = new FormData()
-      formData.append('text', text)
 
-      const response = await fetch('/api/analyze/text', {
+      let apiPath = '/api/analyze/text'
+
+      if (file) {
+        // route to audio analyzer if an audio file is provided
+        if (file.type.startsWith('audio/') || /\.(mp3|wav|m4a|ogg|flac|aac)$/i.test(file.name)) {
+          apiPath = '/api/analyze/audio'
+        } else {
+          apiPath = '/api/analyze/document'
+        }
+        formData.append('file', file)
+      } else {
+        formData.append('text', text)
+      }
+
+      const response = await fetch(apiPath, {
         method: 'POST',
         body: formData,
       })
@@ -41,12 +58,11 @@ export function TextAnalysis() {
 
       const data = await response.json()
       
-      // Check if it's an error response
       if (data.error) {
         setError(data.error || 'An error occurred during analysis')
         return
       }
-      
+
       setResult(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred during analysis')
@@ -55,44 +71,92 @@ export function TextAnalysis() {
     }
   }
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0]
+    if (!selectedFile) return
+
+    setFile(selectedFile)
+    setError(null)
+    setResult(null)
+  }
+
+  const removeFile = () => {
+    setFile(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+    setResult(null)
+    setError(null)
+  }
+
   return (
     <div className="space-y-6">
       {/* Input Section */}
       <div className="space-y-4">
         <div className="space-y-2">
           <label htmlFor="text-input" className="text-sm font-medium">
-            Enter your text
+            {file ? 'File selected (text input will be ignored)' : 'Send a message'}
           </label>
           <Textarea
             id="text-input"
-            placeholder="Paste or type the text you want to analyze..."
+            placeholder="Type your message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="min-h-[150px] resize-none border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400"
+            className="min-h-[200px] resize-none border-slate-200 dark:border-slate-700 focus:border-blue-500 dark:focus:border-blue-400"
           />
         </div>
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-muted-foreground">
-            {text.length} characters
-          </span>
-          <Button 
-            onClick={analyzeText} 
-            disabled={loading || !text.trim()}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Analyzing...
-              </>
-            ) : (
-              <>
-                <Send className="w-4 h-4 mr-2" />
-                Analyze Text
-              </>
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              className="border-slate-200 dark:border-slate-700"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Upload file</span>
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Supported: <span className="font-medium">{SUPPORTED_FILE_TYPES.join(', ')}</span>
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              {file ? `${file.name} selected` : `${text.length} characters`}
+            </span>
+            <Button
+              onClick={analyzeText}
+              disabled={loading || (!file && !text.trim())}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Analyze
+                </>
+              )}
+            </Button>
+            {file && (
+              <Button variant="ghost" size="icon" onClick={removeFile}>
+                <X className="w-4 h-4" />
+              </Button>
             )}
-          </Button>
+          </div>
         </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac,.aac,.pdf,.docx,.pptx,.txt,.png,.jpg,.jpeg"
+          onChange={handleFileSelect}
+          className="hidden"
+        />
       </div>
 
       {/* Error Display */}

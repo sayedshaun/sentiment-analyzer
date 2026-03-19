@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if API URL is configured
-    const apiUrl = process.env.AUDIO_ANALYZE_API_URL || process.env.FASTAPI_BASE_URL + '/audio_analyze'
+    const apiUrl = process.env.AUDIO_ANALYZE_API_URL || process.env.FASTAPI_BASE_URL + '/audio/analyze'
     
     if (!apiUrl || apiUrl.includes('localhost:8000')) {
       // Return development message

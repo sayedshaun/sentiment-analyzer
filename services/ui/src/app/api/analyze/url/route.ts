@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get API URL from environment variables
-    const apiUrl = process.env.URL_ANALYZE_API_URL || process.env.FASTAPI_BASE_URL + '/url_analyze' || 'http://localhost:8000/url_analyze'
+    const apiUrl = process.env.URL_ANALYZE_API_URL || process.env.FASTAPI_BASE_URL + '/url/analyze' || 'http://localhost:8000/url/analyze'
     
     const response = await fetch(apiUrl, {
       method: 'POST',

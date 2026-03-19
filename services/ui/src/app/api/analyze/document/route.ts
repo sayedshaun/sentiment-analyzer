@@ -7,24 +7,23 @@ export async function POST(request: NextRequest) {
 
     if (!file) {
       return NextResponse.json(
-        { error: 'PDF file is required' },
+        { error: 'File is required' },
         { status: 400 }
       )
     }
 
-    // Check if API URL is configured
-    const apiUrl = process.env.PDF_ANALYZE_API_URL || process.env.FASTAPI_BASE_URL + '/document/analyze'
-    
+    // Get API URL from environment variables
+    const apiUrl = process.env.DOCUMENT_ANALYZE_API_URL || process.env.FASTAPI_BASE_URL + '/document/analyze'
+
     if (!apiUrl || apiUrl.includes('localhost:8000')) {
       // Return development message
       return NextResponse.json({
-        error: 'PDF analysis API is currently under development',
+        error: 'Document analysis API is currently under development',
         message: 'This feature is not yet available. Please check back later.',
         status: 'development'
       }, { status: 503 })
     }
 
-    // If API URL is configured, forward the request
     const backendFormData = new FormData()
     backendFormData.append('file', file)
 
@@ -40,8 +39,8 @@ export async function POST(request: NextRequest) {
     const data = await response.json()
     return NextResponse.json(data)
   } catch (error) {
-    console.error('PDF analysis error:', error)
-    
+    console.error('Document analysis error:', error)
+
     return NextResponse.json({
       error: 'Document analysis API is currently under development',
       message: 'This feature is not yet available. Please check back later.',
