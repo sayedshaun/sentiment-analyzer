@@ -1,4 +1,5 @@
-# Sentiment Analyzer
+
+# Sentiment Analyzer : A Redy to Go AI Content Analytical Engine
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
@@ -36,28 +37,8 @@ A comprehensive AI-powered sentiment analysis platform that processes multiple c
 
 ## 🏛️ Architecture Overview
 
-```
-┌─────────────────┐    ┌─────────────────┐
-│   Frontend UI   │    │   Backend API   │
-│   (Next.js)     │◄──►│   (FastAPI)     │
-└─────────────────┘    └─────────────────┘
-                              │
-                    ┌─────────┼─────────┐
-                    │         │         │
-            ┌───────▼───┐ ┌──▼───┐ ┌───▼────┐
-            │   BERT   │ │ STT  │ │  Ollama │
-            │Classifier│ │Service│ │   LLM   │
-            └───────────┘ └──────┘ └────────┘
-```
+![alt text](docs/static/diagram.png)
 
-## 📋 Prerequisites
-
-- **Docker & Docker Compose**: For containerized deployment
-- **Python 3.10+**: For local development
-- **Node.js 18+**: For frontend development
-- **Ollama**: For local LLM inference (optional, can use cloud APIs)
-- **FFmpeg**: For audio processing
-- **Tesseract OCR**: For document processing
 
 ## 🚀 Quick Start
 
@@ -65,13 +46,13 @@ A comprehensive AI-powered sentiment analysis platform that processes multiple c
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sayedshaun/sentiment-analyzer.git
    cd sentiment-analyzer
    ```
 
 2. **Configure environment**
    ```bash
-   cp .env.example .env
+   touch .env
    # Edit .env with your API keys and settings
    ```
 
@@ -84,34 +65,12 @@ A comprehensive AI-powered sentiment analysis platform that processes multiple c
    docker-compose -f docker-compose.cuda.yaml up -d
    ```
 
-4. **Access the application**
-   - Frontend: http://localhost:3000
-   - API Docs: http://localhost:8012/docs
-   - Health Check: http://localhost:8012/health
-
-### Local Development
-
-1. **Backend Setup**
+4. **Built in UI to Access the application**
    ```bash
-   # Install Python dependencies
-   pip install -r requirements.txt
-
-   # Start Ollama (if using local LLM)
-   ollama serve
-
-   # Pull required models
-   ollama pull qwen3:0.6b
-
-   # Start backend
-   uvicorn main:app --host 0.0.0.0 --port 8000
+   http://YOUR_HOST:YOUR_PORT
    ```
+   ![alt text](docs/static/ui.png)
 
-2. **Frontend Setup**
-   ```bash
-   cd ui
-   npm install
-   npm run dev
-   ```
 
 ## ⚙️ Configuration
 
@@ -119,30 +78,20 @@ A comprehensive AI-powered sentiment analysis platform that processes multiple c
 
 Create a `.env` file in the root directory:
 
-```env
+```bash
 # LLM Configuration
-OLLAMA_MODEL=qwen3:0.6b
-OLLAMA_HOST=localhost  # or host.docker.internal for Docker
-OLLAMA_PORT=11434
-
-# Optional Cloud APIs
-GOOGLE_MODEL=gemini-pro
-OPENAI_MODEL=gpt-4
-
-# Service URLs (for Docker)
-BERT_CLASSIFIER_URL=http://sentiment-analyzer-bert:8000/predict
-TTS_URL=http://sentiment-analyzer-tts:8000/transcribe
-
-# Models
-TTS_MODEL=hishab/titu_stt_bn_fastconformer
-BERT_MODEL=SayedShaun/bangla-classifier-multiclass
+TTS_MODEL=hishab/titu_stt_bn_fastconformer  # User your nemo asr model
+OLLAMA_MODEL=qwen3:0.6b   # User your model name
+OLLAMA_HOST=host.docker.internal # User your host IP
+OLLAMA_PORT=11434 # User your port number
+BERT_MODEL=SayedShaun/bangla-classifier-multiclass # User your model name
 ```
 
 ### Model Setup
 
 **Ollama Models:**
 ```bash
-ollama pull qwen3:0.6b  # Main analysis model
+ollama pull qwen3:0.6b  # Your Ollama model
 ```
 
 **Hugging Face Models:**
@@ -157,24 +106,6 @@ ollama pull qwen3:0.6b  # Main analysis model
 curl -X POST "http://localhost:8012/text/analyze" \
   -H "Content-Type: application/x-www-form-urlencoded" \
   -d "text=Your text here"
-```
-
-**Response:**
-```json
-{
-  "story": {
-    "events": [
-      {
-        "summary": "Event description",
-        "bert_sentiment": {
-          "label": "POSITIVE",
-          "score": 0.95
-        }
-      }
-    ],
-    "summary": "Overall story summary"
-  }
-}
 ```
 
 ### Audio Analysis
@@ -199,23 +130,24 @@ curl -X POST "http://localhost:8012/url/analyze" \
   -d "url=https://example.com"
 ```
 
-## 🧪 Testing
-
-### Run Tests
-```bash
-# Backend tests
-python -m pytest
-
-# With coverage
-python -m pytest --cov=src
+**Response:**
+```json
+{
+  "story": {
+    "events": [
+      {
+        "summary": "Event description",
+        "bert_sentiment": {
+          "label": "POSITIVE",
+          "score": 0.95
+        }
+      }
+    ],
+    "summary": "Overall story summary"
+  }
+}
 ```
 
-### Jupyter Notebook
-```bash
-jupyter notebook notebook.ipynb
-```
-
-## 🛠️ Development
 
 ### Project Structure
 ```
@@ -234,49 +166,16 @@ sentiment-analyzer/
 └── docker-compose.*.yaml  # Docker configurations
 ```
 
-### Adding New Features
-
-1. **Backend**: Add routes in `src/api/v1/`
-2. **Frontend**: Add components in `ui/src/components/`
-3. **Services**: Create new service in `services/`
-4. **Update Docker**: Modify compose files for new services
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow PEP 8 for Python code
-- Use TypeScript for frontend components
-- Write tests for new features
-- Update documentation
-- Ensure Docker compatibility
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Contributing
 
-- [FastAPI](https://fastapi.tiangolo.com/) - Modern Python web framework
-- [LangChain](https://www.langchain.com/) - LLM application framework
-- [Ollama](https://ollama.ai/) - Local LLM runtime
-- [Next.js](https://nextjs.org/) - React framework
-- [shadcn/ui](https://ui.shadcn.com/) - UI component library
-
-## 📞 Support
-
-For questions or issues:
-- Open an issue on GitHub
-- Check the [documentation](docs/) folder
-- Review API docs at `/docs` endpoint
+Contributions are welcome! Please fork the repository and create a pull request.
 
 ---
 
-**Made with ❤️ by [Sayed Shaun](https://github.com/sayedshaun)**
+**Made with ❤️ by [Sayed Shaun & Copilot](https://github.com/sayedshaun)**
 
 
