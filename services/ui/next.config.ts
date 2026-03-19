@@ -1,25 +1,25 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Produce a standalone build so Next emits `.next/standalone/server.js`
+  // which the Docker image expects to run in production.
+  output: 'standalone',
   typescript: {
     ignoreBuildErrors: true,
   },
-  // 禁用 Next.js 热重载，由 nodemon 处理重编译
   reactStrictMode: false,
   webpack: (config, { dev }) => {
     if (dev) {
-      // 禁用 webpack 的热模块替换
       config.watchOptions = {
-        ignored: ['**/*'], // 忽略所有文件变化
+        ignored: ['**/*'],
       };
     }
     return config;
   },
-  eslint: {
-    // 构建时忽略ESLint错误
-    ignoreDuringBuilds: true,
-  },
+  // Turbopack is enabled by default in Next.js 16+. Provide an
+  // explicit empty turbopack config to silence the runtime error
+  // when a custom webpack configuration is present.
+  turbopack: {},
 };
 
 export default nextConfig;
