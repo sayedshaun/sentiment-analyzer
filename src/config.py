@@ -5,11 +5,11 @@ class Settings(BaseSettings):
     TTS_MODEL: str
     OLLAMA_MODEL: str
     BERT_MODEL: str
-    OLLAMA_HOST: str | None = "host.docker.internal"
-    OLLAMA_PORT: int | None = 11434
-
-    GOOGLE_MODEL: str | None = None
-    OPENAI_MODEL: str | None = None
+    OLLAMA_HOST: str
+    OLLAMA_PORT: int
+    UI_PORT: int
+    BACKEND_HOST: str
+    BACKEND_PORT: int
 
     @property
     def OLLAMA_EXTERNAL_URL(self):
