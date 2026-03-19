@@ -1,4 +1,5 @@
 services:
+
   sentiment-analyzer-bert:
     container_name: sentiment-analyzer-bert
     build:
@@ -8,8 +9,9 @@ services:
       - .env
     ports:
       - "8010:8000"
+    volumes:
+      - bert_model_cache:/root/.cache/huggingface
     restart: unless-stopped
-
 
   sentiment-analyzer-tts:
     container_name: sentiment-analyzer-tts
@@ -20,6 +22,8 @@ services:
       - .env
     ports:
       - "8013:8000"
+    volumes:
+      - tts_model_cache:/root/.cache/huggingface
     restart: unless-stopped
 
 
@@ -29,14 +33,34 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8012:8000"
+      - "${BACKEND_PORT}:8000"
     volumes:
       - llm_cache:/root/.cache
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       - sentiment-analyzer-bert
+      - sentiment-analyzer-tts
     restart: unless-stopped
+
+
+  sentiment-analyzer-ui:
+    container_name: sentiment-analyzer-ui
+    build:
+      context: ./services/ui
+      dockerfile: Dockerfile
+    ports:
+      - "${UI_PORT}:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - FASTAPI_BASE_URL=http://sentiment-analyzer-backend:8000
+    depends_on:
+      - sentiment-analyzer-backend
+    restart: unless-stopped
+
 
 volumes:
   llm_cache:
+  bert_model_cache:
+  tts_model_cache:

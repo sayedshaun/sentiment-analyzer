@@ -4,6 +4,8 @@ services:
     build:
       context: ./services/bert
       dockerfile: Dockerfile.GPU
+    volumes:
+      - bert_model_cache:/root/.cache/huggingface
     env_file:
       - .env
     ports:
@@ -24,6 +26,8 @@ services:
     build:
       context: ./services/stt
       dockerfile: Dockerfile.GPU
+    volumes:
+      - tts_model_cache:/root/.cache/huggingface
     env_file:
       - .env
     ports:
@@ -45,7 +49,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8012:8000"
+      - "${BACKEND_PORT}:8000"
     volumes:
       - llm_cache:/root/.cache
     depends_on:
@@ -53,6 +57,24 @@ services:
       - sentiment-analyzer-tts
     restart: unless-stopped
 
+
+  sentiment-analyzer-ui:
+    container_name: sentiment-analyzer-ui
+    build:
+      context: ./services/ui
+      dockerfile: Dockerfile
+    ports:
+      - "${UI_PORT}:3000"
+    environment:
+    - FASTAPI_BASE_URL=http://sentiment-analyzer-backend:8000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - sentiment-analyzer-backend
+    restart: unless-stopped
+
 volumes:
   ollama_models:
   llm_cache:
+  bert_model_cache:
+  tts_model_cache:
