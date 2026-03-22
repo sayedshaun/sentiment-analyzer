@@ -1,0 +1,19 @@
+FROM alpine/ollama:0.18.0 AS builder
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN ollama pull glm-ocr:q8_0
+
+FROM alpine/ollama:0.18.0
+
+WORKDIR /app
+
+COPY --from=builder /root/.ollama /root/.ollama
+
+EXPOSE 11434
+
+CMD ["ollama", "serve"]
