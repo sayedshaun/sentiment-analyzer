@@ -152,18 +152,28 @@ curl -X POST "http://localhost:8012/url/analyze" \
 ### Project Structure
 ```
 sentiment-analyzer/
-├── src/                    # Backend source code
+├── docs/                  # Documentation
+│
+├── src/                   # Backend source code
 │   ├── api/               # API routes
 │   ├── genai/             # AI/ML components
 │   ├── config.py          # Configuration
 │   └── logging.py         # Logging setup
+│
 ├── services/              # Microservices
 │   ├── bert/              # Sentiment classifier
 │   ├── stt/               # Speech-to-text
+│   ├── ui/                # Frontend application
 │   └── ollama/            # LLM service
-├── ui/                    # Frontend application
-├── docs/                  # Documentation
-└── docker-compose.*.yaml  # Docker configurations
+│
+├── .env
+├── docker-compose.cpu.yaml
+├── docker-compose.cuda.yaml
+├── Dockerfile
+├── LICENSE
+├── main.py
+├── README.md
+└── pyproject.toml
 ```
 
 ## 📄 License
@@ -176,6 +186,6 @@ Contributions are welcome! Please fork the repository and create a pull request.
 
 ---
 
-**Made with ❤️ by [Sayed Shaun & Copilot](https://github.com/sayedshaun)**
+**Made with ❤️ by [Sayed Shaun & GenerativeAI](https://github.com/sayedshaun)**
 
 
