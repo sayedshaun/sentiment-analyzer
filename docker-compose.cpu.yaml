@@ -36,11 +36,13 @@ services:
       - "${BACKEND_PORT}:8000"
     volumes:
       - llm_cache:/root/.cache
+      - logs:/app/logs
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       - sentiment-analyzer-bert
       - sentiment-analyzer-tts
+      
     restart: unless-stopped
 
 
@@ -61,6 +63,7 @@ services:
 
 
 volumes:
+  logs:
   llm_cache:
   bert_model_cache:
   tts_model_cache:
