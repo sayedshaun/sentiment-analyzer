@@ -11,7 +11,7 @@ A comprehensive AI-powered sentiment analysis platform that processes multiple c
 
 ## 🌟 Features
 
-### 📝 Multi-Modal Analysis
+### 📝 LLM Analysis
 - **Text Analysis**: Direct sentiment analysis of text input
 - **Audio Analysis**: Speech-to-text transcription with sentiment analysis
 - **Document Analysis**: PDF, DOCX, PPTX file processing
@@ -179,6 +179,10 @@ sentiment-analyzer/
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+## Limitations
+While the base LLM is capable of supporting multiple languages, the current Text-to-Speech (TTS) and sentiment analysis models are limited to Bangla. Support for additional languages will be included in future updates.
 
 ## Contributing
 
