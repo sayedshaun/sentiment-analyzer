@@ -1,27 +1,34 @@
+from typing import Optional
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    TTS_MODEL: str
+    TTS_MODEL: Optional[str] = "hishab/titu_stt_bn_fastconformer"
     OLLAMA_MODEL: str
-    BERT_MODEL: str
-    OLLAMA_HOST: str
-    OLLAMA_PORT: int
+    BERT_MODEL: Optional[str] = "SayedShaun/bangla-classifier-multiclass"
+    OLLAMA_URL: Optional[str]
+
     UI_PORT: int
     BACKEND_HOST: str
     BACKEND_PORT: int
 
     @property
     def OLLAMA_EXTERNAL_URL(self):
-        return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
+        """
+        Returns OLLAMA_URL if set, otherwise constructs from host+port.
+        Raises ValueError if neither is available.
+        """
+        if self.OLLAMA_URL:
+            return self.OLLAMA_URL
+        if self.OLLAMA_HOST and self.OLLAMA_PORT:
+            return f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}"
+        raise ValueError(
+            "You must define either OLLAMA_URL or both OLLAMA_HOST and OLLAMA_PORT."
+        )
 
     @property
     def TTS_URL(self):
         return "http://sentiment-analyzer-tts:8000/transcribe"
-
-    @property
-    def OLLAMA_URL(self):
-        return "http://sentiment-analyzer-llm:11434"
 
     @property
     def BERT_CLASSIFIER_URL(self):
