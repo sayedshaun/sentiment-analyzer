@@ -1,7 +1,5 @@
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
-from langchain_openai import ChatOpenAI
 from langchain_community.cache import SQLiteCache
 from ...config import settings
 
@@ -24,23 +22,3 @@ class LLMManager:
             )
         except Exception as e:
             raise e
-
-    # @staticmethod
-    # async def google(model_name: str = settings.GOOGLE_MODEL):
-    #     try:
-    #         return ChatGoogleGenerativeAI(
-    #             model=model_name,
-    #             cache=sqlite_cache,
-    #         )
-    #     except Exception as e:
-    #         raise e
-
-    # @staticmethod
-    # async def openai(model_name: str = settings.OPENAI_MODEL):
-    #     try:
-    #         return ChatOpenAI(
-    #             model=model_name,
-    #             cache=sqlite_cache,
-    #         )
-    #     except Exception as e:
-    #         raise e
