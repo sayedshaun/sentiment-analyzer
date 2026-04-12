@@ -1,0 +1,36 @@
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu20.04 AS builder
+
+WORKDIR /app
+
+# Install python and pip
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create python alias
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu20.04
+
+# Install python runtime
+RUN apt-get update && apt-get install -y \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+COPY --from=builder /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
+
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+COPY . /app
+
+WORKDIR /app
+
+CMD ["python", "main.py"]

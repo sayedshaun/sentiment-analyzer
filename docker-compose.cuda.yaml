@@ -1,80 +1,65 @@
 services:
-  sentiment-analyzer-bert:
-    container_name: sentiment-analyzer-bert
+
+  sentiment-analyzer-ml:
     build:
-      context: ./services/bert
+      context: ./services/ml
       dockerfile: Dockerfile.GPU
-    volumes:
-      - bert_model_cache:/root/.cache/huggingface
     env_file:
       - .env
     ports:
       - "8010:8000"
-    restart: unless-stopped
-    environment:
-      CUDA_VISIBLE_DEVICES: 0
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-
-  sentiment-analyzer-tts:
-    container_name: sentiment-analyzer-tts
-    build:
-      context: ./services/stt
-      dockerfile: Dockerfile.GPU
     volumes:
-      - tts_model_cache:/root/.cache/huggingface
-    env_file:
-      - .env
-    ports:
-      - "8013:8000"
-    restart: unless-stopped
+      - ml_model_cache:/root/.cache
     environment:
-      CUDA_VISIBLE_DEVICES: 0
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      CUDA_VISIBLE_DEVICES: "0"
+    gpus: all
+    command: >
+      uvicorn ml.main:app
+      --host 0.0.0.0
+      --port 8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
   sentiment-analyzer-backend:
-    container_name: sentiment-analyzer-backend
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - .env
     ports:
       - "${BACKEND_PORT}:8000"
     volumes:
       - llm_cache:/root/.cache
+      - logs:/app/logs
     depends_on:
-      - sentiment-analyzer-bert
-      - sentiment-analyzer-tts
+      sentiment-analyzer-ml:
+        condition: service_healthy
+    command: >
+      uvicorn main:app
+      --host 0.0.0.0
+      --port 8000
     restart: unless-stopped
 
 
   sentiment-analyzer-ui:
-    container_name: sentiment-analyzer-ui
     build:
       context: ./services/ui
       dockerfile: Dockerfile
     ports:
       - "${UI_PORT}:3000"
     environment:
-    - FASTAPI_BASE_URL=http://sentiment-analyzer-backend:8000
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      FASTAPI_BASE_URL: http://sentiment-analyzer-backend:8000
     depends_on:
       - sentiment-analyzer-backend
     restart: unless-stopped
 
+
 volumes:
-  ollama_models:
+  logs:
   llm_cache:
-  bert_model_cache:
-  tts_model_cache:
+  ml_model_cache:
