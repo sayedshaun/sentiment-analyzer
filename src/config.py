@@ -6,11 +6,11 @@ class Settings(BaseSettings):
     TTS_MODEL: Optional[str] = "hishab/titu_stt_bn_fastconformer"
     OLLAMA_MODEL: str
     BERT_MODEL: Optional[str] = "SayedShaun/bangla-classifier-multiclass"
-    OLLAMA_URL: Optional[str]
+    OLLAMA_URL: str
 
-    UI_PORT: int
-    BACKEND_HOST: str
-    BACKEND_PORT: int
+    UI_PORT: Optional[int] = 3000
+    BACKEND_HOST: Optional[str] = "localhost"
+    BACKEND_PORT: Optional[int] = 8000
 
     @property
     def OLLAMA_EXTERNAL_URL(self):
