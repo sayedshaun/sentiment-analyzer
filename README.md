@@ -79,12 +79,13 @@ A comprehensive AI-powered sentiment analysis platform that processes multiple c
 Create a `.env` file in the root directory:
 
 ```bash
-# LLM Configuration
 TTS_MODEL=hishab/titu_stt_bn_fastconformer  # User your nemo asr model
-OLLAMA_MODEL=qwen3:0.6b   # User your model name
-OLLAMA_HOST=host.docker.internal # User your host IP
-OLLAMA_PORT=11434 # User your port number
+OLLAMA_MODEL=gemma4:31b
+OLLAMA_URL=https://your-ollama-url/
 BERT_MODEL=SayedShaun/bangla-classifier-multiclass # User your model name
+UI_PORT=3000
+BACKEND_PORT=8000
+BACKEND_HOST=localhost
 ```
 
 ### Model Setup
